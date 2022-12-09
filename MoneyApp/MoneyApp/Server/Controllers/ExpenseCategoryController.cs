@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MoneyApp.Server.Data;
 using MoneyApp.Shared.Models;
 
 namespace MoneyApp.Server.Controllers;
@@ -8,23 +9,17 @@ namespace MoneyApp.Server.Controllers;
 [ApiController]
 public class ExpenseCategoryController : ControllerBase
 {
-    public static List<ExpenseCategory> expenseCategories = new List<ExpenseCategory>
+    private readonly DataContext _context;
+
+    public ExpenseCategoryController(DataContext context)
     {
-        new ExpenseCategory
-        {
-            Id = Guid.NewGuid(),
-            CategoryName = "Food"
-        },
-        new ExpenseCategory
-        {
-            Id = Guid.NewGuid(),
-            CategoryName = "House"
-        }
-    };
+        _context = context;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<ExpenseCategory>>> GetExpenseCategories()
     {
+        var expenseCategories = await _context.ExpenseCategories.ToListAsync();
         return Ok(expenseCategories);
     }
 
@@ -32,7 +27,7 @@ public class ExpenseCategoryController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult<ExpenseCategory>> GetExpenseCategoryById(Guid id)
     {
-        var expenseCategory = expenseCategories.FirstOrDefault(x => x.Id == id);
+        var expenseCategory = await _context.ExpenseCategories.FirstOrDefaultAsync(x => x.Id == id);
         
         if (expenseCategory == null)
         {
