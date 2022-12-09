@@ -1,0 +1,39 @@
+﻿@page "/expensecategories"
+@inject IExpenseCategoryService ExpenseCategoryService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Expense Categories</PageTitle>
+
+<h3>Expense Categories</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category name</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var expenseCategory in ExpenseCategoryService.ExpenseCategories)
+        {
+            <tr>
+                <td>@expenseCategory.CategoryName</td>
+                <td>
+                    <button class="btnalert-primary" @onclick="(() => ShowExpenseCategory(expenseCategory.Id))"><i class="oi oi-pencil"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ExpenseCategoryService.GetExpenseCategories();
+    }
+
+    void ShowExpenseCategory(Guid id)
+    {
+        NavigationManager.NavigateTo($"expensecategory/{id}");
+    }
+}
