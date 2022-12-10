@@ -9,5 +9,8 @@ namespace MoneyApp.Client.Services.ExpenseCategoryService
         Task GetExpenseCategories();
 
         Task<ExpenseCategory> GetExpenseCategoryById(Guid id);
+        Task CreateExpenseCategory(ExpenseCategory expenseCategory);
+        Task UpdateExpenseCategory(ExpenseCategory expenseCategory);
+        Task DeleteExpenseCategory(Guid id);
     }
 }

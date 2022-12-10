@@ -25,6 +25,7 @@
         }
     </tbody>
 </table>
+<button class="btn btn-primary" @onclick="CreateNewExpenseCategory">Create Expense Category</button>
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -35,5 +36,10 @@
     void ShowExpenseCategory(Guid id)
     {
         NavigationManager.NavigateTo($"expensecategory/{id}");
+    }
+
+    void CreateNewExpenseCategory()
+    {
+        NavigationManager.NavigateTo("/expensecategory");
     }
 }
