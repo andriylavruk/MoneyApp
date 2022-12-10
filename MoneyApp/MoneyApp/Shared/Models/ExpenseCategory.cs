@@ -2,6 +2,6 @@
 
 public class ExpenseCategory
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string CategoryName { get; set; } = string.Empty;
 }

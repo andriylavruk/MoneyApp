@@ -25,7 +25,7 @@ public class ExpenseCategoryController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<ActionResult<ExpenseCategory>> GetExpenseCategoryById(Guid id)
+    public async Task<ActionResult<ExpenseCategory>> GetExpenseCategoryById(int id)
     {
         var expenseCategory = await _context.ExpenseCategories.FirstOrDefaultAsync(x => x.Id == id);
         
@@ -47,7 +47,7 @@ public class ExpenseCategoryController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ExpenseCategory>> UpdateExpenseCategory(Guid id, ExpenseCategory expenseCategory)
+    public async Task<ActionResult<ExpenseCategory>> UpdateExpenseCategory(int id, ExpenseCategory expenseCategory)
     {
         var dbExpenseCategory = await _context.ExpenseCategories.FirstOrDefaultAsync(x => x.Id == id);
         
@@ -64,7 +64,7 @@ public class ExpenseCategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<ExpenseCategory>> DeleteExpenseCategory(Guid id)
+    public async Task<ActionResult<ExpenseCategory>> DeleteExpenseCategory(int id)
     {
         var dbExpenseCategory = await _context.ExpenseCategories.FirstOrDefaultAsync(x => x.Id == id);
 

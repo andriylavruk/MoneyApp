@@ -1,5 +1,5 @@
 ﻿@page "/expensecategory"
-@page "/expensecategory/{id:guid}"
+@page "/expensecategory/{id:int}"
 @inject IExpenseCategoryService ExpenseCategoryService
 
 @if(Id == null)
@@ -28,7 +28,7 @@ else
 
 @code {
     [Parameter]
-    public Guid? Id { get; set; }
+    public int? Id { get; set; }
 
     string btnText = string.Empty;
 
@@ -42,7 +42,7 @@ else
         }
         else
         {
-            expenseCategory = await ExpenseCategoryService.GetExpenseCategoryById((Guid)Id);
+            expenseCategory = await ExpenseCategoryService.GetExpenseCategoryById((int)Id);
         }
     }
 

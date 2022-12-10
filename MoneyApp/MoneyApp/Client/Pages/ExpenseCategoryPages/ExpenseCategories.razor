@@ -6,25 +6,37 @@
 
 <h3>Expense Categories</h3>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Category name</th>
-            <th>Options</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var expenseCategory in ExpenseCategoryService.ExpenseCategories)
-        {
+@if (ExpenseCategoryService.ExpenseCategories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (ExpenseCategoryService.ExpenseCategories.Count == 0)
+{
+    <p>There are no Expense Categories.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>@expenseCategory.CategoryName</td>
-                <td>
-                    <button class="btnalert-primary" @onclick="(() => ShowExpenseCategory(expenseCategory.Id))"><i class="oi oi-pencil"></i></button>
-                </td>
+                <th>Category name</th>
+                <th>Options</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach(var expenseCategory in ExpenseCategoryService.ExpenseCategories)
+            {
+                <tr>
+                    <td>@expenseCategory.CategoryName</td>
+                    <td>
+                        <button class="btnalert-primary" @onclick="(() => ShowExpenseCategory(expenseCategory.Id))"><i class="oi oi-pencil"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <button class="btn btn-primary" @onclick="CreateNewExpenseCategory">Create Expense Category</button>
 
 @code {
@@ -33,7 +45,7 @@
         await ExpenseCategoryService.GetExpenseCategories();
     }
 
-    void ShowExpenseCategory(Guid id)
+    void ShowExpenseCategory(int id)
     {
         NavigationManager.NavigateTo($"expensecategory/{id}");
     }

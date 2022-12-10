@@ -1,16 +1,15 @@
 ﻿using MoneyApp.Shared.Models;
 
-namespace MoneyApp.Client.Services.ExpenseCategoryService
+namespace MoneyApp.Client.Services.ExpenseCategoryService;
+
+public interface IExpenseCategoryService
 {
-    public interface IExpenseCategoryService
-    {
-        List<ExpenseCategory> ExpenseCategories { get; set; }
+    List<ExpenseCategory> ExpenseCategories { get; set; }
 
-        Task GetExpenseCategories();
+    Task GetExpenseCategories();
 
-        Task<ExpenseCategory> GetExpenseCategoryById(Guid id);
-        Task CreateExpenseCategory(ExpenseCategory expenseCategory);
-        Task UpdateExpenseCategory(ExpenseCategory expenseCategory);
-        Task DeleteExpenseCategory(Guid id);
-    }
+    Task<ExpenseCategory> GetExpenseCategoryById(int id);
+    Task CreateExpenseCategory(ExpenseCategory expenseCategory);
+    Task UpdateExpenseCategory(ExpenseCategory expenseCategory);
+    Task DeleteExpenseCategory(int id);
 }

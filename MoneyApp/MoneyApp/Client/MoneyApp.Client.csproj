@@ -15,8 +15,4 @@
     <ProjectReference Include="..\Shared\MoneyApp.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\ExpensePages\" />
-  </ItemGroup>
-
 </Project>

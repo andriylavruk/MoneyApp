@@ -2,70 +2,70 @@
 using MoneyApp.Shared.Models;
 using System.Net.Http.Json;
 
-namespace MoneyApp.Client.Services.ExpenseCategoryService
+namespace MoneyApp.Client.Services.ExpenseCategoryService;
+
+public class ExpenseCategoryService : IExpenseCategoryService
 {
-    public class ExpenseCategoryService : IExpenseCategoryService
+    private readonly HttpClient _httpClient;
+    private readonly NavigationManager _navigationManager;
+
+    public ExpenseCategoryService(HttpClient httpClient, NavigationManager navigationManager)
     {
-        private readonly HttpClient _httpClient;
-        private readonly NavigationManager _navigationManager;
+        _httpClient = httpClient;
+        _navigationManager = navigationManager;
+    }
 
-        public ExpenseCategoryService(HttpClient httpClient, NavigationManager navigationManager)
+    public List<ExpenseCategory> ExpenseCategories { get; set; } = new List<ExpenseCategory>();
+
+    public async Task GetExpenseCategories()
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<ExpenseCategory>>("api/expensecategory");
+
+        if (result != null)
         {
-            _httpClient = httpClient;
-            _navigationManager = navigationManager;
+            ExpenseCategories = result;
         }
+    }
 
-        public List<ExpenseCategory> ExpenseCategories { get; set; } = new List<ExpenseCategory>();
+    public async Task<ExpenseCategory> GetExpenseCategoryById(int id)
+    {
+        var result = await _httpClient.GetFromJsonAsync<ExpenseCategory>($"api/expensecategory/{id}");
 
-        public async Task GetExpenseCategories()
+        if (result != null)
         {
-            var result = await _httpClient.GetFromJsonAsync<List<ExpenseCategory>>("api/expensecategory");
-
-            if (result != null)
-            {
-                ExpenseCategories = result;
-            }
+            return result;
         }
-
-        public async Task<ExpenseCategory> GetExpenseCategoryById(Guid id)
+        else
         {
-            var result = await _httpClient.GetFromJsonAsync<ExpenseCategory>($"api/expensecategory/{id}");
-
-            if (result != null)
-            {
-                return result;
-            }
-            else
-            {
-                throw new Exception("Expense category not found.");
-            }
+            throw new Exception("Expense category not found.");
         }
+    }
 
-        public async Task CreateExpenseCategory(ExpenseCategory expenseCategory)
-        {
-            var result = await _httpClient.PostAsJsonAsync("api/expensecategory", expenseCategory);
-            await SetExpenseCategory(result);
-        }
+    public async Task CreateExpenseCategory(ExpenseCategory expenseCategory)
+    {
+        var result = await _httpClient.PostAsJsonAsync("api/expensecategory", expenseCategory);
 
-        public async Task UpdateExpenseCategory(ExpenseCategory expenseCategory)
-        {
-            var result = await _httpClient.PutAsJsonAsync($"api/expensecategory/{expenseCategory.Id}", expenseCategory);
+        await SetExpenseCategory(result);
+    }
 
-            await SetExpenseCategory(result);
-        }
+    public async Task UpdateExpenseCategory(ExpenseCategory expenseCategory)
+    {
+        var result = await _httpClient.PutAsJsonAsync($"api/expensecategory/{expenseCategory.Id}", expenseCategory);
 
-        public async Task DeleteExpenseCategory(Guid id)
-        {
-            var result = await _httpClient.DeleteAsync($"api/expensecategory/{id}");
-            
-            await SetExpenseCategory(result);
-        }
+        await SetExpenseCategory(result);
+    }
 
-        private async Task SetExpenseCategory(HttpResponseMessage result)
-        {
-            var response = await result.Content.ReadFromJsonAsync<ExpenseCategory>();
+    public async Task DeleteExpenseCategory(int id)
+    {
+        var result = await _httpClient.DeleteAsync($"api/expensecategory/{id}");
+        
+        await SetExpenseCategory(result);
+    }
 
-            _navigationManager.NavigateTo("expensecategories");
-        }
+    private async Task SetExpenseCategory(HttpResponseMessage result)
+    {
+        var response = await result.Content.ReadFromJsonAsync<ExpenseCategory>();
+
+        _navigationManager.NavigateTo("expensecategories");
     }
 }

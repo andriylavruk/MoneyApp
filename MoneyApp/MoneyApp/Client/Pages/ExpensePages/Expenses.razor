@@ -1,0 +1,64 @@
+﻿@page "/expenses"
+@inject IExpenseService ExpenseService
+@inject IExpenseCategoryService ExpenseCategoryService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Expenses</PageTitle>
+
+<h3>Expenses</h3>
+
+@if (ExpenseService.Expenses == null)
+{
+        <p><em>Loading...</em></p>
+}
+else if (ExpenseService.Expenses.Count == 0)
+{
+        <p>There are no Expenses.</p>
+}
+else
+{
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Expense Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>DateCreated</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var expense in ExpenseService.Expenses)
+            {
+                        <tr>
+                            <td>@expense.ExpenseCategory?.CategoryName</td>
+                            <td>@expense.Description</td>
+                            <td>@expense.Amount</td>
+                            <td>@expense.DateCreated</td>
+                            <td>
+                                <button class="btnalert-primary" @onclick="(() => ShowExpense(expense.Id))"><i class="oi oi-pencil"></i></button>
+                            </td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
+
+<button class="btn btn-primary" @onclick="CreateNewExpense">Create Expense</button>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ExpenseService.GetExpenses();
+    }
+
+    void ShowExpense(int id)
+    {
+        NavigationManager.NavigateTo($"expense/{id}");
+    }
+
+    void CreateNewExpense()
+    {
+        NavigationManager.NavigateTo("/expense");
+    }
+}

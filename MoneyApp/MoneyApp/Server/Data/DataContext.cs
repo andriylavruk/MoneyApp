@@ -12,19 +12,9 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ExpenseCategory>().HasData(
-            new ExpenseCategory
-            {
-                Id = Guid.NewGuid(),
-                CategoryName = "Food"
-            },
-            new ExpenseCategory
-            {
-                Id = Guid.NewGuid(),
-                CategoryName = "House"
-            }
-        );
+
     }
 
     public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
 }
