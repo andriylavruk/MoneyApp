@@ -15,11 +15,11 @@ public class ExpenseCategoryService : IExpenseCategoryService
         _navigationManager = navigationManager;
     }
 
-    public List<ExpenseCategory> ExpenseCategories { get; set; } = new List<ExpenseCategory>();
+    public List<ExpenseCategoryDTO> ExpenseCategories { get; set; } = new List<ExpenseCategoryDTO>();
 
     public async Task GetExpenseCategories()
     {
-        var result = await _httpClient.GetFromJsonAsync<List<ExpenseCategory>>("api/expensecategory");
+        var result = await _httpClient.GetFromJsonAsync<List<ExpenseCategoryDTO>>("api/expensecategory");
 
         if (result != null)
         {
@@ -27,9 +27,9 @@ public class ExpenseCategoryService : IExpenseCategoryService
         }
     }
 
-    public async Task<ExpenseCategory> GetExpenseCategoryById(int id)
+    public async Task<ExpenseCategoryDTO> GetExpenseCategoryById(int id)
     {
-        var result = await _httpClient.GetFromJsonAsync<ExpenseCategory>($"api/expensecategory/{id}");
+        var result = await _httpClient.GetFromJsonAsync<ExpenseCategoryDTO>($"api/expensecategory/{id}");
 
         if (result != null)
         {
@@ -41,16 +41,16 @@ public class ExpenseCategoryService : IExpenseCategoryService
         }
     }
 
-    public async Task CreateExpenseCategory(ExpenseCategory expenseCategory)
+    public async Task CreateExpenseCategory(ExpenseCategoryDTO expenseCategoryDTO)
     {
-        var result = await _httpClient.PostAsJsonAsync("api/expensecategory", expenseCategory);
+        var result = await _httpClient.PostAsJsonAsync("api/expensecategory", expenseCategoryDTO);
 
         await SetExpenseCategory(result);
     }
 
-    public async Task UpdateExpenseCategory(ExpenseCategory expenseCategory)
+    public async Task UpdateExpenseCategory(ExpenseCategoryDTO expenseCategoryDTO)
     {
-        var result = await _httpClient.PutAsJsonAsync($"api/expensecategory/{expenseCategory.Id}", expenseCategory);
+        var result = await _httpClient.PutAsJsonAsync($"api/expensecategory/{expenseCategoryDTO.Id}", expenseCategoryDTO);
 
         await SetExpenseCategory(result);
     }
@@ -64,7 +64,7 @@ public class ExpenseCategoryService : IExpenseCategoryService
 
     private async Task SetExpenseCategory(HttpResponseMessage result)
     {
-        var response = await result.Content.ReadFromJsonAsync<ExpenseCategory>();
+        var response = await result.Content.ReadFromJsonAsync<ExpenseCategoryDTO>();
 
         _navigationManager.NavigateTo("expensecategories");
     }

@@ -2,12 +2,12 @@
 
 public interface IExpenseService
 {
-    List<Expense>? Expenses { get; set; }
+    List<ExpenseDTO>? Expenses { get; set; }
 
     Task GetExpenses();
 
-    Task<Expense> GetExpenseById(int id);
-    Task CreateExpense(Expense expense);
-    Task UpdateExpense(Expense expense);
+    Task<ExpenseDTO> GetExpenseById(int id);
+    Task CreateExpense(ExpenseDTO expenseDTO);
+    Task UpdateExpense(ExpenseDTO expenseDTO);
     Task DeleteExpense(int id);
 }

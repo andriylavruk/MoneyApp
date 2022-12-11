@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyApp.Server.Data;
+using MoneyApp.Shared.DTO;
 using MoneyApp.Shared.Models;
 
 namespace MoneyApp.Server.Controllers;
@@ -10,22 +11,25 @@ namespace MoneyApp.Server.Controllers;
 public class ExpenseController : ControllerBase
 {
     private readonly IExpenseRepository _expenseRepository;
+    private readonly IMapper _mapper;
 
-    public ExpenseController(IExpenseRepository expenseRepository)
+    public ExpenseController(IExpenseRepository expenseRepository, IMapper mapper)
     {
         _expenseRepository = expenseRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Expense>>> GetAllExpenses()
+    public async Task<ActionResult<IEnumerable<ExpenseDTO>>> GetAllExpenses()
     {
         var expenses = await _expenseRepository.GetAllExpneses();
-        return Ok(expenses);
+        var mappedExpenses = _mapper.Map<IEnumerable<ExpenseDTO>>(expenses);
+        return Ok(mappedExpenses);
     }
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<ActionResult<Expense>> GetExpenseCategoryById(int id)
+    public async Task<ActionResult<ExpenseDTO>> GetExpenseCategoryById(int id)
     {
         var expense = await _expenseRepository.GetExpenseById(id);
 
@@ -34,40 +38,33 @@ public class ExpenseController : ControllerBase
             return NotFound();
         }
 
-        return Ok(expense);
+        var mappedExpense = _mapper.Map<ExpenseDTO>(expense);
+
+        return Ok(mappedExpense);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Expense>> CreateExpenseCategory(Expense expense)
+    public async Task<ActionResult<ExpenseDTO>> CreateExpenseCategory(ExpenseDTO expenseDTO)
     {
-        expense.ExpenseCategory = null;
+        expenseDTO.ExpenseCategory = null;
+        var expense = _mapper.Map<Expense>(expenseDTO);
         await _expenseRepository.CreateExpense(expense);
+
 
         return Ok(expense);
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Expense>> UpdateExpenseCategory(int id, Expense expense)
+    public async Task<ActionResult<ExpenseDTO>> UpdateExpenseCategory(int id, ExpenseDTO expenseDTO)
     {
-        var dbExpense = await _expenseRepository.GetExpenseById(id);
+        var mappperExpense = _mapper.Map<Expense>(expenseDTO);
+        await _expenseRepository.UpdateExpense(mappperExpense);
 
-        if (dbExpense == null)
-        {
-            return NotFound();
-        }
-
-        dbExpense.Description = expense.Description;
-        dbExpense.Amount = expense.Amount;
-        dbExpense.DateCreated= expense.DateCreated;
-        dbExpense.ExpenseCategoryId = expense.ExpenseCategoryId;
-
-        await _expenseRepository.UpdateExpense(dbExpense);
-
-        return Ok(dbExpense);
+        return Ok(mappperExpense);
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Expense>> DeleteExpenseCategory(int id)
+    public async Task<ActionResult<ExpenseDTO>> DeleteExpenseCategory(int id)
     {
         var dbExpense = await _expenseRepository.GetExpenseById(id);
 
@@ -76,8 +73,9 @@ public class ExpenseController : ControllerBase
             return NotFound();
         }
 
+        var mappperExpense = _mapper.Map<Expense>(dbExpense);
         await _expenseRepository.DeleteExpense(id);
 
-        return Ok(dbExpense);
+        return Ok(mappperExpense);
     }
 }

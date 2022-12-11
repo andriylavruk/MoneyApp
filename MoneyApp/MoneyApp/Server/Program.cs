@@ -2,6 +2,8 @@ global using Microsoft.EntityFrameworkCore;
 global using MoneyApp.Server.Repositories.Interfaces;
 global using MoneyApp.Server.Repositories;
 global using MoneyApp.Shared.Models;
+global using MoneyApp.Shared.DTO;
+global using AutoMapper;
 using Microsoft.AspNetCore.ResponseCompression;
 using MoneyApp.Server.Data;
 
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 

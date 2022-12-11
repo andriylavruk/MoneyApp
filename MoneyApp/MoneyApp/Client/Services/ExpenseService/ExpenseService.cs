@@ -15,11 +15,11 @@ public class ExpenseService : IExpenseService
         _navigationManager = navigationManager;
     }
 
-    public List<Expense>? Expenses { get; set; }
+    public List<ExpenseDTO>? Expenses { get; set; }
 
     public async Task GetExpenses()
     {
-        var result = await _httpClient.GetFromJsonAsync<List<Expense>>("api/expense");
+        var result = await _httpClient.GetFromJsonAsync<List<ExpenseDTO>>("api/expense");
 
         if (result != null)
         {
@@ -27,9 +27,9 @@ public class ExpenseService : IExpenseService
         }
     }
 
-    public async Task<Expense> GetExpenseById(int id)
+    public async Task<ExpenseDTO> GetExpenseById(int id)
     {
-        var result = await _httpClient.GetFromJsonAsync<Expense>($"api/expense/{id}");
+        var result = await _httpClient.GetFromJsonAsync<ExpenseDTO>($"api/expense/{id}");
 
         if (result != null)
         {
@@ -41,16 +41,16 @@ public class ExpenseService : IExpenseService
         }
     }
 
-    public async Task CreateExpense(Expense expense)
+    public async Task CreateExpense(ExpenseDTO expenseDTO)
     {
-        var result = await _httpClient.PostAsJsonAsync("api/expense", expense);
+        var result = await _httpClient.PostAsJsonAsync("api/expense", expenseDTO);
 
         await SetExpense(result);
     }
 
-    public async Task UpdateExpense(Expense expense)
+    public async Task UpdateExpense(ExpenseDTO expenseDTO)
     {
-        var result = await _httpClient.PutAsJsonAsync($"api/expense/{expense.Id}", expense);
+        var result = await _httpClient.PutAsJsonAsync($"api/expense/{expenseDTO.Id}", expenseDTO);
 
         await SetExpense(result);
     }
@@ -64,7 +64,7 @@ public class ExpenseService : IExpenseService
 
     private async Task SetExpense(HttpResponseMessage result)
     {
-        var response = await result.Content.ReadFromJsonAsync<Expense>();
+        var response = await result.Content.ReadFromJsonAsync<ExpenseDTO>();
 
         _navigationManager.NavigateTo("expenses");
     }

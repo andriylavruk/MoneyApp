@@ -2,6 +2,7 @@ global using MoneyApp.Client.Services.ExpenseCategoryService;
 global using MoneyApp.Client.Services.ExpenseService;
 global using MoneyApp.Shared;
 global using MoneyApp.Shared.Models;
+global using MoneyApp.Shared.DTO;
 
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
