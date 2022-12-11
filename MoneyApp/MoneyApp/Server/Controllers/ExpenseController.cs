@@ -9,17 +9,17 @@ namespace MoneyApp.Server.Controllers;
 [ApiController]
 public class ExpenseController : ControllerBase
 {
-    private readonly DataContext _context;
+    private readonly IExpenseRepository _expenseRepository;
 
-    public ExpenseController(DataContext context)
+    public ExpenseController(IExpenseRepository expenseRepository)
     {
-        _context = context;
+        _expenseRepository = expenseRepository;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Expense>>> GetAllExpenses()
+    public async Task<ActionResult<IEnumerable<Expense>>> GetAllExpenses()
     {
-        var expenses = await _context.Expenses.Include(x => x.ExpenseCategory).ToListAsync();
+        var expenses = await _expenseRepository.GetAllExpneses();
         return Ok(expenses);
     }
 
@@ -27,13 +27,11 @@ public class ExpenseController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult<Expense>> GetExpenseCategoryById(int id)
     {
-        var expense = await _context.Expenses
-            .Include(x => x.ExpenseCategory)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var expense = await _expenseRepository.GetExpenseById(id);
 
         if (expense == null)
         {
-            return NotFound("Sorry, no expense.");
+            return NotFound();
         }
 
         return Ok(expense);
@@ -43,8 +41,7 @@ public class ExpenseController : ControllerBase
     public async Task<ActionResult<Expense>> CreateExpenseCategory(Expense expense)
     {
         expense.ExpenseCategory = null;
-        _context.Expenses.Add(expense);
-        await _context.SaveChangesAsync();
+        await _expenseRepository.CreateExpense(expense);
 
         return Ok(expense);
     }
@@ -52,13 +49,11 @@ public class ExpenseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Expense>> UpdateExpenseCategory(int id, Expense expense)
     {
-        var dbExpense = await _context.Expenses
-            .Include(x => x.ExpenseCategory)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var dbExpense = await _expenseRepository.GetExpenseById(id);
 
         if (dbExpense == null)
         {
-            return NotFound("Sorry, no expense.");
+            return NotFound();
         }
 
         dbExpense.Description = expense.Description;
@@ -66,7 +61,7 @@ public class ExpenseController : ControllerBase
         dbExpense.DateCreated= expense.DateCreated;
         dbExpense.ExpenseCategoryId = expense.ExpenseCategoryId;
 
-        await _context.SaveChangesAsync();
+        await _expenseRepository.UpdateExpense(dbExpense);
 
         return Ok(dbExpense);
     }
@@ -74,18 +69,14 @@ public class ExpenseController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<Expense>> DeleteExpenseCategory(int id)
     {
-        var dbExpense = await _context.Expenses
-            .Include(x => x.ExpenseCategory)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var dbExpense = await _expenseRepository.GetExpenseById(id);
 
         if (dbExpense == null)
         {
-            return NotFound("Sorry, no expense.");
+            return NotFound();
         }
 
-        _context.Expenses.Remove(dbExpense);
-
-        await _context.SaveChangesAsync();
+        await _expenseRepository.DeleteExpense(id);
 
         return Ok(dbExpense);
     }
