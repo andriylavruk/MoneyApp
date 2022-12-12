@@ -1,0 +1,57 @@
+﻿@page "/incomecategories"
+@inject IIncomeCategoryService IncomeCategoryService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Expense Categories</PageTitle>
+
+<h3>Expense Categories</h3>
+
+@if (IncomeCategoryService.IncomeCategories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (IncomeCategoryService.IncomeCategories.Count == 0)
+{
+    <p>There are no Income Categories.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category name</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var incomeCategory in IncomeCategoryService.IncomeCategories)
+            {
+                <tr>
+                    <td>@incomeCategory.CategoryName</td>
+                    <td>
+                        <button class="btnalert-primary" @onclick="(() => ShowIncomeCategory(incomeCategory.Id))"><i class="oi oi-pencil"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-primary" @onclick="CreateNewIncomeCategory">Create Income Category</button>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await IncomeCategoryService.GetIncomeCategories();
+    }
+
+    void ShowIncomeCategory(int id)
+    {
+        NavigationManager.NavigateTo($"incomecategory/{id}");
+    }
+
+    void CreateNewIncomeCategory()
+    {
+        NavigationManager.NavigateTo("/incomecategory");
+    }
+}

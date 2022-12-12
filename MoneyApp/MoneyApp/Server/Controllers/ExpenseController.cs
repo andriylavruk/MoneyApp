@@ -57,10 +57,10 @@ public class ExpenseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<ExpenseDTO>> UpdateExpenseCategory(int id, ExpenseDTO expenseDTO)
     {
-        var mappperExpense = _mapper.Map<Expense>(expenseDTO);
-        await _expenseRepository.UpdateExpense(mappperExpense);
+        var mapperExpense = _mapper.Map<Expense>(expenseDTO);
+        await _expenseRepository.UpdateExpense(mapperExpense);
 
-        return Ok(mappperExpense);
+        return Ok(mapperExpense);
     }
 
     [HttpDelete("{id}")]

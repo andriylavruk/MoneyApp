@@ -7,7 +7,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<ExpenseCategory, ExpenseCategoryDTO>().ReverseMap();
+        CreateMap<IncomeCategory, IncomeCategoryDTO>().ReverseMap();
         CreateMap<Expense, ExpenseDTO>().ReverseMap();
+        CreateMap<Income, IncomeDTO>().ReverseMap();
     }
-
 }

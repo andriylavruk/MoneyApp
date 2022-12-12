@@ -1,5 +1,4 @@
-﻿
-using MoneyApp.Shared.Models;
+﻿using MoneyApp.Shared.Models;
 
 namespace MoneyApp.Server.Data;
 
@@ -16,5 +15,7 @@ public class DataContext : DbContext
     }
 
     public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+    public DbSet<IncomeCategory> IncomeCategories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
+    public DbSet<Income> Incomes { get; set; }
 }
