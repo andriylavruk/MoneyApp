@@ -11,11 +11,15 @@ namespace MoneyApp.Server.Controllers;
 public class ExpenseController : ControllerBase
 {
     private readonly IExpenseRepository _expenseRepository;
+    private readonly IExpenseCategoryRepository _expenseCategoryRepository;
     private readonly IMapper _mapper;
 
-    public ExpenseController(IExpenseRepository expenseRepository, IMapper mapper)
+    public ExpenseController(IExpenseRepository expenseRepository, 
+        IExpenseCategoryRepository expenseCategoryRepository, 
+        IMapper mapper)
     {
         _expenseRepository = expenseRepository;
+        _expenseCategoryRepository = expenseCategoryRepository;
         _mapper = mapper;
     }
 
@@ -58,6 +62,8 @@ public class ExpenseController : ControllerBase
     public async Task<ActionResult<ExpenseDTO>> UpdateExpenseCategory(int id, ExpenseDTO expenseDTO)
     {
         var mapperExpense = _mapper.Map<Expense>(expenseDTO);
+        var expenseCategory = await _expenseCategoryRepository.GetExpenseCategoryById(mapperExpense.ExpenseCategoryId);
+        mapperExpense.ExpenseCategory = expenseCategory;
         await _expenseRepository.UpdateExpense(mapperExpense);
 
         return Ok(mapperExpense);

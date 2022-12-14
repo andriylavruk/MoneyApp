@@ -34,7 +34,7 @@ else
                             <td>@expense.ExpenseCategory?.CategoryName</td>
                             <td>@expense.Description</td>
                             <td>@expense.Amount</td>
-                            <td>@expense.DateCreated</td>
+                            <td>@expense.DateCreated.ToString("dd.MM.yyyy HH:mm")</td>
                             <td>
                                 <button class="btnalert-primary" @onclick="(() => ShowExpense(expense.Id))"><i class="oi oi-pencil"></i></button>
                             </td>

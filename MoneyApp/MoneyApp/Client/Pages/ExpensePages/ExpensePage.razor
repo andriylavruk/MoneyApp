@@ -14,23 +14,32 @@ else
     <h3>Edit Expense</h3>
 }
 
-<EditForm Model="expense" OnSubmit="HandleSubmit">
+<EditForm Model="expense" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
     <div>
         <label for="expense">Description</label>
         <InputText id="expense" @bind-Value="expense.Description" class="form-control"></InputText>
+        <ValidationMessage For="@(() => expense.Description)"></ValidationMessage>
     </div>
     <div>
         <label for="expense">Amount</label>
         <InputNumber id="expense" @bind-Value="expense.Amount" class="form-control"></InputNumber>
+        <ValidationMessage For="@(() => expense.Amount)"></ValidationMessage>
     </div>
     <div>
         <label>Expense Category</label><br />
         <InputSelect @bind-Value="expense.ExpenseCategoryId" class="form-select">
+            @if(Id == null)
+            {
+                <option selected value="">Select category</option>
+            }
+
             @foreach (var expenseCategory in ExpenseCategoryService.ExpenseCategories)
             {
                 <option value="@expenseCategory.Id">@expenseCategory.CategoryName</option>
             }
         </InputSelect>
+        <ValidationMessage For="@(() => expense.ExpenseCategoryId)"></ValidationMessage>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
@@ -46,13 +55,13 @@ else
 
     string btnText = string.Empty;
 
-    ExpenseDTO expense = new ExpenseDTO { ExpenseCategory = new ExpenseCategory() };
+    ExpenseDTO expense = new ExpenseDTO();
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id == null)
         {
-            expense.ExpenseCategoryId = expense.ExpenseCategory.Id;
+            expense.ExpenseCategoryId = expense.ExpenseCategory?.Id;
         }
         else
         {

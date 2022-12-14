@@ -13,10 +13,12 @@ else
     <h3>Edit Expense Category</h3>
 }
 
-<EditForm Model="expenseCategory" OnSubmit="HandleSubmit">
+<EditForm Model="expenseCategory" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
     <div>
         <label for="categoryName">Category Name</label>
         <InputText id="categoryName" @bind-Value="expenseCategory.CategoryName" class="form-control"></InputText>
+        <ValidationMessage For="@(() => expenseCategory.CategoryName)"></ValidationMessage>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
@@ -53,7 +55,7 @@ else
 
     async Task HandleSubmit()
     {
-        if(Id == null)
+        if (Id == null)
         {
             await ExpenseCategoryService.CreateExpenseCategory(expenseCategory);
         }

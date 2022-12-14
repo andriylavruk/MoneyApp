@@ -34,7 +34,7 @@ else
                     <td>@income.IncomeCategory?.CategoryName</td>
                     <td>@income.Description</td>
                     <td>@income.Amount</td>
-                    <td>@income.DateCreated</td>
+                    <td>@income.DateCreated.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>
                         <button class="btnalert-primary" @onclick="(() => ShowIncome(income.Id))"><i class="oi oi-pencil"></i></button>
                     </td>

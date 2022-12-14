@@ -8,11 +8,15 @@ namespace MoneyApp.Server.Controllers
     public class IncomeController : ControllerBase
     {
         private readonly IIncomeRepository _incomeRepository;
+        private readonly IIncomeCategoryRepository _incomeCategoryRepository;
         private readonly IMapper _mapper;
 
-        public IncomeController(IIncomeRepository incomeRepository, IMapper mapper)
+        public IncomeController(IIncomeRepository incomeRepository, 
+            IIncomeCategoryRepository incomeCategoryRepository, 
+            IMapper mapper)
         {
             _incomeRepository = incomeRepository;
+            _incomeCategoryRepository = incomeCategoryRepository;
             _mapper = mapper;
         }
 
@@ -55,6 +59,8 @@ namespace MoneyApp.Server.Controllers
         public async Task<ActionResult<IncomeDTO>> UpdateIncomeCategory(int id, IncomeDTO incomeDTO)
         {
             var mapperIncome = _mapper.Map<Income>(incomeDTO);
+            var incomeCategory = await _incomeCategoryRepository.GetIncomeCategoryById(mapperIncome.IncomeCategoryId);
+            mapperIncome.IncomeCategory = incomeCategory;
             await _incomeRepository.UpdateIncome(mapperIncome);
 
             return Ok(mapperIncome);
