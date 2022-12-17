@@ -10,4 +10,6 @@ public class IncomeCategoryDTO
     [MinLength(2, ErrorMessage = "Must be at least {1} characters long")]
     [MaxLength(100, ErrorMessage = "Must be no more than {1} characters.")]
     public string CategoryName { get; set; } = string.Empty;
+
+    public string UserId { get; set; } = string.Empty;
 }

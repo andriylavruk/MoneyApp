@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyApp.Client.Pages.ExpenseCategoryPages;
 using MoneyApp.Server.Data;
@@ -9,6 +10,7 @@ namespace MoneyApp.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ExpenseCategoryController : ControllerBase
 {
     private readonly IExpenseCategoryRepository _expenseCategoryRepository;

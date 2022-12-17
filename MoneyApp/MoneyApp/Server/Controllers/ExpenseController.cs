@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyApp.Server.Data;
 using MoneyApp.Shared.DTO;
@@ -8,6 +9,7 @@ namespace MoneyApp.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ExpenseController : ControllerBase
 {
     private readonly IExpenseRepository _expenseRepository;
@@ -53,7 +55,6 @@ public class ExpenseController : ControllerBase
         expenseDTO.ExpenseCategory = null;
         var expense = _mapper.Map<Expense>(expenseDTO);
         await _expenseRepository.CreateExpense(expense);
-
 
         return Ok(expense);
     }

@@ -3,51 +3,58 @@
 @inject IIncomeService IncomeService
 @inject IIncomeCategoryService IncomeCategoryService
 
-@if (Id == null)
+@if(_signInSuccessful == false)
 {
-    <PageTitle>Create a new Income</PageTitle>
-    <h3>Create a new Income</h3>
+    <h3>You are not authorized.</h3>
 }
 else
 {
-    <PageTitle>Edit Income</PageTitle>
-    <h3>Edit Income</h3>
-}
-
-<EditForm Model="income" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <div>
-        <label for="income">Description</label>
-        <InputText id="income" @bind-Value="income.Description" class="form-control"></InputText>
-        <ValidationMessage For="@(() => income.Description)"></ValidationMessage>
-    </div>
-    <div>
-        <label for="income">Amount</label>
-        <InputNumber id="income" @bind-Value="income.Amount" class="form-control"></InputNumber>
-        <ValidationMessage For="@(() => income.Amount)"></ValidationMessage>
-    </div>
-    <div>
-        <label>Income Category</label><br />
-        <InputSelect @bind-Value="income.IncomeCategoryId" class="form-select">
-            @if (Id == null)
-            {
-                <option selected value="">Select category</option>
-            }
-
-            @foreach (var incomeCategory in IncomeCategoryService.IncomeCategories)
-            {
-                <option value="@incomeCategory.Id">@incomeCategory.CategoryName</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => income.IncomeCategoryId)"></ValidationMessage>
-    </div>
-    <br />
-    <button type="submit" class="btn btn-primary">@btnText</button>
-    @if (Id != null)
+    @if (Id == null)
     {
-        <button type="button" class="btn btn-danger" @onclick="DeleteIncome">Delete Income</button>
+        <PageTitle>Create a new Income</PageTitle>
+        <h3>Create a new Income</h3>
     }
-</EditForm>
+    else
+    {
+        <PageTitle>Edit Income</PageTitle>
+        <h3>Edit Income</h3>
+    }
+
+    <EditForm Model="income" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div>
+            <label for="income">Description</label>
+            <InputText id="income" @bind-Value="income.Description" class="form-control"></InputText>
+            <ValidationMessage For="@(() => income.Description)"></ValidationMessage>
+        </div>
+        <div>
+            <label for="income">Amount</label>
+            <InputNumber id="income" @bind-Value="income.Amount" class="form-control"></InputNumber>
+            <ValidationMessage For="@(() => income.Amount)"></ValidationMessage>
+        </div>
+        <div>
+            <label>Income Category</label><br />
+            <InputSelect @bind-Value="income.IncomeCategoryId" class="form-select">
+                @if (Id == null)
+                {
+                    <option selected value="">Select category</option>
+                }
+
+                @foreach (var incomeCategory in IncomeCategoryService.IncomeCategories)
+                {
+                    <option value="@incomeCategory.Id">@incomeCategory.CategoryName</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => income.IncomeCategoryId)"></ValidationMessage>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">@btnText</button>
+        @if (Id != null)
+        {
+            <button type="button" class="btn btn-danger" @onclick="DeleteIncome">Delete Income</button>
+        }
+    </EditForm>
+}
 
 @code {
     [Parameter]
@@ -56,6 +63,37 @@ else
     string btnText = string.Empty;
 
     IncomeDTO income = new IncomeDTO();
+
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected bool _signInSuccessful = false;
+
+    public string ErrorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+
+        btnText = Id == null ? "Save New Income" : "Update Income";
+
+        try
+        {
+            if (user.Identity.IsAuthenticated == true)
+            {
+                _signInSuccessful = true;
+                await IncomeCategoryService.GetIncomeCategories();
+            }
+            else
+            {
+                _signInSuccessful = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -67,12 +105,6 @@ else
         {
             income = await IncomeService.GetIncomeById((int)Id);
         }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        btnText = Id == null ? "Save New Income" : "Update Income";
-        await IncomeCategoryService.GetIncomeCategories();
     }
 
     async Task HandleSubmit()

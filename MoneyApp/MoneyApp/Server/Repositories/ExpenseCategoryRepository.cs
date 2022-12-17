@@ -7,38 +7,57 @@ namespace MoneyApp.Server.Repositories;
 public class ExpenseCategoryRepository : IExpenseCategoryRepository
 {
     private readonly DataContext _context;
+    private readonly IUserRepository _userRepository;
 
-    public ExpenseCategoryRepository(DataContext context)
+    public ExpenseCategoryRepository(DataContext context, IUserRepository userRepository)
     {
         _context = context;
+        _userRepository = userRepository;
     }
 
     public async Task<IEnumerable<ExpenseCategory>> GetAllExpneseCategories()
     {
-        return await _context.ExpenseCategories.ToListAsync();
+        var currentUser = _userRepository.GetCurrentUser();
+        return await _context.ExpenseCategories
+            .Where(x => x.UserId == currentUser)
+            .ToListAsync();
     }
 
     public async Task<ExpenseCategory> GetExpenseCategoryById(int id)
     {
-        return await _context.ExpenseCategories.FirstOrDefaultAsync(x => x.Id == id);
+        var currentUser = _userRepository.GetCurrentUser();
+        return await _context.ExpenseCategories
+            .Where(x => x.UserId == currentUser)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task CreateExpenseCategory(ExpenseCategory expenseCategory)
     {
+        expenseCategory.UserId = _userRepository.GetCurrentUser();
         _context.ExpenseCategories.Add(expenseCategory);
         await _context.SaveChangesAsync();
     }
 
     public async Task UpdateExpenseCategory(ExpenseCategory expenseCategory)
     {
-        _context.ExpenseCategories.Update(expenseCategory);
-        await _context.SaveChangesAsync();        
+        var currentUser = _userRepository.GetCurrentUser();
+
+        if (expenseCategory.UserId == currentUser)
+        {
+            _context.ExpenseCategories.Update(expenseCategory);
+            await _context.SaveChangesAsync();
+        }   
     }
 
     public async Task DeleteExpenseCategory(int id)
     {
+        var currentUser = _userRepository.GetCurrentUser();
         var expenseCategory = await GetExpenseCategoryById(id);
-        _context.ExpenseCategories.Remove(expenseCategory);
-        await _context.SaveChangesAsync();
+
+        if (expenseCategory.UserId == currentUser)
+        {
+            _context.ExpenseCategories.Remove(expenseCategory);
+            await _context.SaveChangesAsync();
+        }
     }
 }

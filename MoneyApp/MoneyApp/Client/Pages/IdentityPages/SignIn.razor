@@ -1,0 +1,92 @@
+﻿@page "/signin"
+@using MoneyApp.Client.Providers;
+
+@if (_signInSuccessful == false)
+{
+    <h3 class="text-center mainHeaderText mb-1">SignIn </h3>
+
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-lg">
+                    <div class="card-body p-4">
+
+                        <EditForm Model="_userToSignIn" OnValidSubmit="SignInUser">
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+
+                            <div class="form-group">
+                                <label class="label-name" for="email">Email:</label>
+                                <InputText @bind-Value="_userToSignIn.EmailAddress" id="email" class="form-control" />
+                                <ValidationMessage For="@(() => _userToSignIn.EmailAddress)" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="label-name" for="password">Password:</label>
+                                <InputText @bind-Value="_userToSignIn.Password" type="password" id="password" class="form-control" />
+                                <ValidationMessage For="@(() => _userToSignIn.Password)" />
+                            </div>
+
+                            <div class="d-grid gap-2 mt-3">
+                                <button type="submit" class="btn btn-secondary btnSubmit buttonText"><i class="mdi mdi-login"></i> Sign In</button>
+                            </div>
+
+                            @if (_attemptToSignInFailed == true)
+                            {
+                                <p class="text-danger">Sign In failed. Check your inputs.</p>
+                            }
+
+                        </EditForm>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    NavigationManager.NavigateTo("/", true);
+}
+
+@code
+{
+    [Inject]
+    public HttpClient HttpClient { get; set; }
+
+    [Inject]
+    public ILocalStorageService LocalStorageService { get; set; }
+
+    [Inject]
+    public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    private User _userToSignIn = new();
+    protected bool _signInSuccessful = false;
+    protected bool _attemptToSignInFailed = false;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    protected async Task SignInUser()
+    {
+        _attemptToSignInFailed = false;
+
+        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync(APIEndpoints.s_signIn, _userToSignIn);
+
+        if (httpResponseMessage.IsSuccessStatusCode)
+        {
+            string jsonWebToken = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            await LocalStorageService.SetItemAsync("bearerToken", jsonWebToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearerToken", jsonWebToken);
+
+            _signInSuccessful = true;
+        }
+        else
+        {
+            _attemptToSignInFailed = true;
+        }
+    }
+}

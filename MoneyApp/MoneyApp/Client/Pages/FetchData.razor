@@ -8,40 +8,73 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if(_signInSuccessful == false)
 {
-    <p><em>Loading...</em></p>
+    <h3>You are not authorized.</h3>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
+    @if (forecasts == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <th>Date</th>
+                    <th>Temp. (C)</th>
+                    <th>Temp. (F)</th>
+                    <th>Summary</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var forecast in forecasts)
+                {
+                    <tr>
+                        <td>@forecast.Date.ToShortDateString()</td>
+                        <td>@forecast.TemperatureC</td>
+                        <td>@forecast.TemperatureF</td>
+                        <td>@forecast.Summary</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
+
 
 @code {
     private WeatherForecast[]? forecasts;
 
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected bool _signInSuccessful = false;
+
+    public string ErrorMessage { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        var user = ( await AuthenticationState).User;
+
+        try
+        {
+            if (user.Identity.IsAuthenticated == true)
+            {
+                _signInSuccessful = true;
+                forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+            }
+            else
+            {
+                _signInSuccessful = false;
+                forecasts = null;
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 }
