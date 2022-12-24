@@ -1,10 +1,8 @@
 ﻿namespace MoneyApp.Client.Services.IncomeService;
 
-public interface IIncomeService
+public interface IIncomeService : IPagination
 {
     List<IncomeDTO>? Incomes { get; set; }
-
-    Task GetIncomes();
 
     Task<IncomeDTO> GetIncomeById(int id);
     Task CreateIncome(IncomeDTO incomeDTO);

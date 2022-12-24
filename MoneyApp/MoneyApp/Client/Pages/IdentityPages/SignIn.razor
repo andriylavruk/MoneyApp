@@ -70,7 +70,7 @@ else
     {
         _attemptToSignInFailed = false;
 
-        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync(APIEndpoints.s_signIn, _userToSignIn);
+        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync("api/user/signin", _userToSignIn);
 
         if (httpResponseMessage.IsSuccessStatusCode)
         {

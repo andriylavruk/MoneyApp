@@ -6,7 +6,7 @@ namespace MoneyApp.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = "User")]
+[Authorize]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]

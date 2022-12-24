@@ -82,7 +82,7 @@ else
             if (user.Identity.IsAuthenticated == true)
             {
                 _signInSuccessful = true;
-                await IncomeCategoryService.GetIncomeCategories();
+                await IncomeCategoryService.GetAllItems(1, -1);
             }
             else
             {

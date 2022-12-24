@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
+        //.WithExposedHeaders(new string[] { "pagesQuantity" }));
 });
 
 builder.Services.AddDbContext<DataIdentityContext>(options =>
@@ -90,8 +91,6 @@ else
     app.UseHsts();
 }
 
-
-
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -108,7 +107,7 @@ app.UseEndpoints(endpoints =>
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.UseRouting();
+//app.UseRouting();
 
 
 app.MapRazorPages();

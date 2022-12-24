@@ -2,7 +2,7 @@
 
 public interface IIncomeCategoryRepository
 {
-    Task<IEnumerable<IncomeCategory>> GetAllIncomeCategories();
+    IQueryable<IncomeCategory> GetAllIncomeCategories();
     Task<IncomeCategory> GetIncomeCategoryById(int id);
     Task CreateIncomeCategory(IncomeCategory incomeCategory);
     Task UpdateIncomeCategory(IncomeCategory incomeCategory);

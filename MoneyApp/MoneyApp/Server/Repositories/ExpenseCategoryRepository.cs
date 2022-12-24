@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MoneyApp.Server.Data;
-using MoneyApp.Shared.Models;
+﻿using MoneyApp.Server.Data;
 
 namespace MoneyApp.Server.Repositories;
 
@@ -15,12 +13,12 @@ public class ExpenseCategoryRepository : IExpenseCategoryRepository
         _userRepository = userRepository;
     }
 
-    public async Task<IEnumerable<ExpenseCategory>> GetAllExpneseCategories()
+    public IQueryable<ExpenseCategory> GetAllExpneseCategories()
     {
         var currentUser = _userRepository.GetCurrentUser();
-        return await _context.ExpenseCategories
+        return _context.ExpenseCategories
             .Where(x => x.UserId == currentUser)
-            .ToListAsync();
+            .OrderBy(x => x.CategoryName);
     }
 
     public async Task<ExpenseCategory> GetExpenseCategoryById(int id)

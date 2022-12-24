@@ -50,6 +50,10 @@ else
         </table>
     }
 
+    <Pagination TotalPagesQuantity="IncomeService.TotalPageQuantity" CurrentPage="IncomeService.CurrentPage" Radius="2"
+            SelectedPage="SelectedPage">
+    </Pagination>
+
     <button class="btn btn-primary" @onclick="CreateNewIncome">Create Income</button>
 }
 
@@ -70,7 +74,7 @@ else
             if (user.Identity.IsAuthenticated == true)
             {
                 _signInSuccessful = true;
-                await IncomeService.GetIncomes();
+                await IncomeService.GetAllItems(IncomeService.CurrentPage);
             }
             else
             {
@@ -81,6 +85,12 @@ else
         {
             ErrorMessage = ex.Message;
         }
+    }
+
+    protected async Task SelectedPage(int page)
+    {
+        IncomeService.CurrentPage = page;
+        await IncomeService.GetAllItems(page);
     }
 
     void ShowIncome(int id)

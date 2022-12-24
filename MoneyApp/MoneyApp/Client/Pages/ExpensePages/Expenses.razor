@@ -50,6 +50,10 @@ else
         </table>
     }
 
+    <Pagination TotalPagesQuantity="ExpenseService.TotalPageQuantity" CurrentPage="ExpenseService.CurrentPage" Radius="2"
+            SelectedPage="SelectedPage">
+    </Pagination>
+
     <button class="btn btn-primary" @onclick="CreateNewExpense">Create Expense</button>
 }
 
@@ -70,7 +74,7 @@ else
             if (user.Identity.IsAuthenticated == true)
             {
                 _signInSuccessful = true;
-                await ExpenseService.GetExpenses();
+                await ExpenseService.GetAllItems(ExpenseService.CurrentPage);
             }
             else
             {
@@ -81,6 +85,12 @@ else
         {
             ErrorMessage = ex.Message;
         }
+    }
+
+    protected async Task SelectedPage(int page)
+    {
+        ExpenseService.CurrentPage = page;
+        await ExpenseService.GetAllItems(page);
     }
 
     void ShowExpense(int id)

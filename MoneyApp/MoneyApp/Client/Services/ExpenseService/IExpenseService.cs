@@ -1,10 +1,8 @@
 ﻿namespace MoneyApp.Client.Services.ExpenseService;
 
-public interface IExpenseService
+public interface IExpenseService : IPagination
 {
     List<ExpenseDTO>? Expenses { get; set; }
-
-    Task GetExpenses();
 
     Task<ExpenseDTO> GetExpenseById(int id);
     Task CreateExpense(ExpenseDTO expenseDTO);

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace MoneyApp.Client.Services.IncomeCategoryService;
 
@@ -7,6 +7,9 @@ public class IncomeCategoryService : IIncomeCategoryService
 {
     private readonly HttpClient _httpClient;
     private readonly NavigationManager _navigationManager;
+
+    public int TotalPageQuantity { get; set; }
+    public int CurrentPage { get; set; } = 1;
 
     public IncomeCategoryService(HttpClient httpClient, NavigationManager navigationManager)
     {
@@ -16,13 +19,21 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public List<IncomeCategoryDTO> IncomeCategories { get; set; } = new List<IncomeCategoryDTO>();
 
-    public async Task GetIncomeCategories()
+    public async Task GetAllItems(int page = 1, int quantityPerPage = 10)
     {
-        var result = await _httpClient.GetFromJsonAsync<List<IncomeCategoryDTO>>("api/incomecategory");
+        var httpResponse = await _httpClient.GetAsync($"api/incomecategory?page={page}&quantityPerPage={quantityPerPage}");
 
-        if (result != null)
+        if (httpResponse.IsSuccessStatusCode)
         {
-            IncomeCategories = result;
+            TotalPageQuantity = int.Parse(httpResponse.Headers.GetValues("pagesQuantity").FirstOrDefault());
+            var responseString = await httpResponse.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<List<IncomeCategoryDTO>>(responseString,
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            if (result != null)
+            {
+                IncomeCategories = result;
+            }
         }
     }
 

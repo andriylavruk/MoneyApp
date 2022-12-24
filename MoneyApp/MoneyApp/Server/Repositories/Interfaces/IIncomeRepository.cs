@@ -2,7 +2,7 @@
 
 public interface IIncomeRepository
 {
-    Task<IEnumerable<Income>> GetAllIncomes();
+    IQueryable<Income> GetAllIncomes();
     Task<Income> GetIncomeById(int id);
     Task CreateIncome(Income income);
     Task UpdateIncome(Income income);

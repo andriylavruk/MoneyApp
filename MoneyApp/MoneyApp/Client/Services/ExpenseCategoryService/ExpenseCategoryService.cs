@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MoneyApp.Shared.Models;
-using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace MoneyApp.Client.Services.ExpenseCategoryService;
 
@@ -8,6 +7,9 @@ public class ExpenseCategoryService : IExpenseCategoryService
 {
     private readonly HttpClient _httpClient;
     private readonly NavigationManager _navigationManager;
+
+    public int TotalPageQuantity { get; set; }
+    public int CurrentPage { get; set; } = 1;
 
     public ExpenseCategoryService(HttpClient httpClient, NavigationManager navigationManager)
     {
@@ -17,13 +19,21 @@ public class ExpenseCategoryService : IExpenseCategoryService
 
     public List<ExpenseCategoryDTO> ExpenseCategories { get; set; } = new List<ExpenseCategoryDTO>();
 
-    public async Task GetExpenseCategories()
+    public async Task GetAllItems(int page = 1, int quantityPerPage = 10)
     {
-        var result = await _httpClient.GetFromJsonAsync<List<ExpenseCategoryDTO>>("api/expensecategory");
+        var httpResponse = await _httpClient.GetAsync($"api/expensecategory?page={page}&quantityPerPage={quantityPerPage}");
 
-        if (result != null)
+        if(httpResponse.IsSuccessStatusCode)
         {
-            ExpenseCategories = result;
+            TotalPageQuantity = int.Parse(httpResponse.Headers.GetValues("pagesQuantity").FirstOrDefault());
+            var responseString = await httpResponse.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<List<ExpenseCategoryDTO>>(responseString, 
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            if (result != null)
+            {
+                ExpenseCategories = result;
+            }
         }
     }
 

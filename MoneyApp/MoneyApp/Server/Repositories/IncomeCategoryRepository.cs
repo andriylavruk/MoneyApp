@@ -1,5 +1,4 @@
 ﻿using MoneyApp.Server.Data;
-using MoneyApp.Shared.Models;
 
 namespace MoneyApp.Server.Repositories;
 
@@ -15,12 +14,12 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         _userRepository = userRepository;
     }
 
-    public async Task<IEnumerable<IncomeCategory>> GetAllIncomeCategories()
+    public IQueryable<IncomeCategory> GetAllIncomeCategories()
     {
         var currentUser = _userRepository.GetCurrentUser();
-        return await _context.IncomeCategories
+        return _context.IncomeCategories
             .Where(x => x.UserId == currentUser)
-            .ToListAsync();
+            .OrderBy(x => x.CategoryName);
     }
 
     public async Task<IncomeCategory> GetIncomeCategoryById(int id)

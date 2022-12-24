@@ -2,7 +2,7 @@
 
 public interface IExpenseRepository
 {
-    Task<IEnumerable<Expense>> GetAllExpneses();
+    IQueryable<Expense> GetAllExpneses();
     Task<Expense> GetExpenseById(int id);
     Task CreateExpense(Expense expense);
     Task UpdateExpense(Expense expense);

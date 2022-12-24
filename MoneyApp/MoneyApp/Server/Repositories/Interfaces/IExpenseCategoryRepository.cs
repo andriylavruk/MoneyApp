@@ -2,7 +2,7 @@
 
 public interface IExpenseCategoryRepository
 {
-    Task<IEnumerable<ExpenseCategory>> GetAllExpneseCategories();
+    IQueryable<ExpenseCategory> GetAllExpneseCategories();
     Task<ExpenseCategory> GetExpenseCategoryById(int id);
     Task CreateExpenseCategory(ExpenseCategory expenseCategory);
     Task UpdateExpenseCategory(ExpenseCategory expenseCategory);

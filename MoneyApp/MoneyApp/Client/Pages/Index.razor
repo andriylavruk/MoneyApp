@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using MoneyApp.Client.Providers;
+@*@using MoneyApp.Client.Providers;*@
 
 <div class="container pb-3">
     <h1 class="mb-4 text-center">MoneyApp</h1>
@@ -29,26 +29,26 @@
 </div>
 
 @code{
-    [Inject] 
-    HttpClient HttpClient { get; set; }
+    //[Inject] 
+    //HttpClient HttpClient { get; set; }
 
-    [Inject] 
-    AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    //[Inject] 
+    //AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
-    [Inject]
-    ILocalStorageService LocalStorageService { get; set; }
+    //[Inject]
+    //ILocalStorageService LocalStorageService { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
-        {
-            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+    //    {
+    //        string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
 
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+    //        await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
 
-            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", savedToken);
+    //        HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", savedToken);
 
-            StateHasChanged();
-        }
-    }
+    //        StateHasChanged();
+    //    }
+    //}
 }

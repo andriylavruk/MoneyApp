@@ -1,12 +1,8 @@
-﻿using MoneyApp.Shared.Models;
+﻿namespace MoneyApp.Client.Services.ExpenseCategoryService;
 
-namespace MoneyApp.Client.Services.ExpenseCategoryService;
-
-public interface IExpenseCategoryService
+public interface IExpenseCategoryService : IPagination
 {
     List<ExpenseCategoryDTO> ExpenseCategories { get; set; }
-
-    Task GetExpenseCategories();
 
     Task<ExpenseCategoryDTO> GetExpenseCategoryById(int id);
     Task CreateExpenseCategory(ExpenseCategoryDTO expenseCategoryDTO);

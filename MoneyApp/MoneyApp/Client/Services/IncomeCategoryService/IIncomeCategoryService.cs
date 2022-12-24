@@ -1,10 +1,8 @@
 ﻿namespace MoneyApp.Client.Services.IncomeCategoryService;
 
-public interface IIncomeCategoryService
+public interface IIncomeCategoryService : IPagination
 {
     List<IncomeCategoryDTO> IncomeCategories { get; set; }
-
-    Task GetIncomeCategories();
 
     Task<IncomeCategoryDTO> GetIncomeCategoryById(int id);
     Task CreateIncomeCategory(IncomeCategoryDTO incomeCategoryDTO);
