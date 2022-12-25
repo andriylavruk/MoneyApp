@@ -4,7 +4,6 @@ global using MoneyApp.Server.Repositories;
 global using MoneyApp.Shared.Models;
 global using MoneyApp.Shared.DTO;
 global using AutoMapper;
-using Microsoft.AspNetCore.ResponseCompression;
 using MoneyApp.Server.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +22,6 @@ builder.Services.AddCors(options =>
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
-        //.WithExposedHeaders(new string[] { "pagesQuantity" }));
 });
 
 builder.Services.AddDbContext<DataIdentityContext>(options =>
@@ -108,10 +106,7 @@ app.UseEndpoints(endpoints =>
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-//app.UseRouting();
-
 app.MapRazorPages();
-//app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();

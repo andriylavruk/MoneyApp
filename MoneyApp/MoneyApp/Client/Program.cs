@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MoneyApp.Client;
 using Microsoft.AspNetCore.Components.Authorization;
 using MoneyApp.Client.Providers;
-using MoneyApp.Client.Services.StatisticsService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
