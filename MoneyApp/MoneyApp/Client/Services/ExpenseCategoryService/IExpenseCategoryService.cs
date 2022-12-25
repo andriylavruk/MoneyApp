@@ -1,6 +1,6 @@
 ﻿namespace MoneyApp.Client.Services.ExpenseCategoryService;
 
-public interface IExpenseCategoryService : IPagination
+public interface IExpenseCategoryService : IPaginationSearch
 {
     List<ExpenseCategoryDTO> ExpenseCategories { get; set; }
 

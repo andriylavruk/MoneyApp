@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyApp.Server.Helpers;
+using MoneyApp.Server.Repositories.RepositoryExtensions;
 
 namespace MoneyApp.Server.Controllers;
 
@@ -19,9 +20,10 @@ public class ExpenseCategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ExpenseCategoryDTO>>> GetAllExpenseCategories([FromQuery] PaginationDTO pagination)
+    public async Task<ActionResult<IEnumerable<ExpenseCategoryDTO>>> GetAllExpenseCategories([FromQuery] PaginationDTO pagination, [FromQuery] string? searchFilter)
     {
         var queryable = _expenseCategoryRepository.GetAllExpneseCategories().AsQueryable();
+        queryable = queryable.Search(searchFilter);
         await HttpContext.InsertPaginationParameterInResoponse(queryable, pagination.QuantityPerPage);
         var expenseCategories = await queryable.Paginate(pagination).ToListAsync();
         var mappedExpenseCategories = _mapper.Map<IEnumerable<ExpenseCategoryDTO>>(expenseCategories);

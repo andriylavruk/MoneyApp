@@ -10,6 +10,7 @@ public class IncomeService : IIncomeService
 
     public int TotalPageQuantity { get; set; }
     public int CurrentPage { get; set; } = 1;
+    public string SearchFilter { get; set; } = string.Empty;
 
     public IncomeService(HttpClient httpClient, NavigationManager navigationManager)
     {
@@ -21,7 +22,7 @@ public class IncomeService : IIncomeService
 
     public async Task GetAllItems(int page = 1, int quantityPerPage = 10)
     {
-        var httpResponse = await _httpClient.GetAsync($"api/income?page={page}&quantityPerPage={quantityPerPage}");
+        var httpResponse = await _httpClient.GetAsync($"api/income?page={page}&quantityPerPage={quantityPerPage}&searchFilter={SearchFilter}");
 
         if (httpResponse.IsSuccessStatusCode)
         {

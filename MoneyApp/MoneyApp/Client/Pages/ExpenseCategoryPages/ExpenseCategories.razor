@@ -12,6 +12,22 @@ else
 {
     <h3>Expense Categories</h3>
 
+    <div class="form-inline">
+        <form class="d-flex">
+            <input type="text" class="form-control mb-2 mr-sm-2 me-1"
+               placeholder="Search"
+               @bind="ExpenseCategoryService.SearchFilter">
+            <button type="button" class="btn btn-primary mr-sm-2 mb-2 me-1"
+                @onclick="Search">
+                Search
+            </button>
+            <button type="button" class="btn btn-danger mr-sm-2 mb-2"
+                @onclick="Clear">
+                Clear
+            </button>
+        </form>
+    </div>
+
     @if (ExpenseCategoryService.ExpenseCategories == null)
     {
         <p><em>Loading...</em></p>
@@ -41,11 +57,11 @@ else
                 }
             </tbody>
         </table>
-    }
 
-    <Pagination TotalPagesQuantity="ExpenseCategoryService.TotalPageQuantity" CurrentPage="ExpenseCategoryService.CurrentPage" Radius="2"
-        SelectedPage="SelectedPage">
-    </Pagination>
+        <Pagination TotalPagesQuantity="ExpenseCategoryService.TotalPageQuantity" CurrentPage="ExpenseCategoryService.CurrentPage" Radius="2"
+            SelectedPage="SelectedPage">
+        </Pagination>
+    }
 
     <button class="btn btn-primary" @onclick="CreateNewExpenseCategory">Create Expense Category</button>
 }
@@ -78,6 +94,20 @@ else
         {
             ErrorMessage = ex.Message;
         }
+    }
+
+    private async Task Search()
+    {
+        ExpenseCategoryService.CurrentPage = 1;
+        await ExpenseCategoryService.GetAllItems(ExpenseCategoryService.CurrentPage);
+    }
+
+    private async Task Clear()
+    {
+        ExpenseCategoryService.SearchFilter = string.Empty;
+        ExpenseCategoryService.CurrentPage = 1;
+        await ExpenseCategoryService.GetAllItems(ExpenseCategoryService.CurrentPage);
+        NavigationManager.NavigateTo("/expensecategories");
     }
 
     protected async Task SelectedPage(int page)

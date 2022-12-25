@@ -1,6 +1,6 @@
 ﻿namespace MoneyApp.Client.Services.ExpenseService;
 
-public interface IExpenseService : IPagination
+public interface IExpenseService : IPaginationSearch
 {
     List<ExpenseDTO>? Expenses { get; set; }
 

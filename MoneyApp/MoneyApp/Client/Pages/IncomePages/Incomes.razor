@@ -13,6 +13,22 @@ else
 {
     <h3>Incomes</h3>
 
+    <div class="form-inline">
+        <form class="d-flex">
+            <input type="text" class="form-control mb-2 mr-sm-2 me-1"
+               placeholder="Search"
+               @bind="IncomeService.SearchFilter">
+            <button type="button" class="btn btn-primary mr-sm-2 mb-2 me-1"
+                @onclick="Search">
+                Search
+            </button>
+            <button type="button" class="btn btn-danger mr-sm-2 mb-2"
+                @onclick="Clear">
+                Clear
+            </button>
+        </form>
+    </div>
+
     @if (IncomeService.Incomes == null)
     {
         <p><em>Loading...</em></p>
@@ -48,11 +64,11 @@ else
                 }
             </tbody>
         </table>
-    }
 
-    <Pagination TotalPagesQuantity="IncomeService.TotalPageQuantity" CurrentPage="IncomeService.CurrentPage" Radius="2"
+        <Pagination TotalPagesQuantity="IncomeService.TotalPageQuantity" CurrentPage="IncomeService.CurrentPage" Radius="2"
             SelectedPage="SelectedPage">
-    </Pagination>
+        </Pagination>
+    }
 
     <button class="btn btn-primary" @onclick="CreateNewIncome">Create Income</button>
 }
@@ -85,6 +101,20 @@ else
         {
             ErrorMessage = ex.Message;
         }
+    }
+
+    private async Task Search()
+    {
+        IncomeService.CurrentPage = 1;
+        await IncomeService.GetAllItems(IncomeService.CurrentPage);
+    }
+
+    private async Task Clear()
+    {
+        IncomeService.SearchFilter = string.Empty;
+        IncomeService.CurrentPage = 1;
+        await IncomeService.GetAllItems(IncomeService.CurrentPage);
+        NavigationManager.NavigateTo("/incomes");
     }
 
     protected async Task SelectedPage(int page)

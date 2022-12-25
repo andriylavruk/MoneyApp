@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyApp.Server.Helpers;
+using MoneyApp.Server.Repositories.RepositoryExtensions;
 using MoneyApp.Shared.DTO;
 
 namespace MoneyApp.Server.Controllers
@@ -21,9 +22,10 @@ namespace MoneyApp.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IncomeCategoryDTO>>> GetAllIncomeCategories([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult<IEnumerable<IncomeCategoryDTO>>> GetAllIncomeCategories([FromQuery] PaginationDTO pagination, [FromQuery] string? searchFilter)
         {
             var queryable = _incomeCategoryRepository.GetAllIncomeCategories().AsQueryable();
+            queryable = queryable.Search(searchFilter);
             await HttpContext.InsertPaginationParameterInResoponse(queryable, pagination.QuantityPerPage);
             var incomeCategories = await queryable.Paginate(pagination).ToListAsync();
             var mappedIncomeCategories = _mapper.Map<IEnumerable<IncomeCategoryDTO>>(incomeCategories);

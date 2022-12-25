@@ -10,6 +10,7 @@ public class ExpenseCategoryService : IExpenseCategoryService
 
     public int TotalPageQuantity { get; set; }
     public int CurrentPage { get; set; } = 1;
+    public string SearchFilter { get; set; } = string.Empty;
 
     public ExpenseCategoryService(HttpClient httpClient, NavigationManager navigationManager)
     {
@@ -21,7 +22,7 @@ public class ExpenseCategoryService : IExpenseCategoryService
 
     public async Task GetAllItems(int page = 1, int quantityPerPage = 10)
     {
-        var httpResponse = await _httpClient.GetAsync($"api/expensecategory?page={page}&quantityPerPage={quantityPerPage}");
+        var httpResponse = await _httpClient.GetAsync($"api/expensecategory?page={page}&quantityPerPage={quantityPerPage}&searchFilter={SearchFilter}");
 
         if(httpResponse.IsSuccessStatusCode)
         {

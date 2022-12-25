@@ -1,6 +1,6 @@
 ﻿namespace MoneyApp.Client.Services.IncomeService;
 
-public interface IIncomeService : IPagination
+public interface IIncomeService : IPaginationSearch
 {
     List<IncomeDTO>? Incomes { get; set; }
 
