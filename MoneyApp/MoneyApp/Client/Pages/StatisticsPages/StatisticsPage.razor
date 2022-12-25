@@ -1,0 +1,182 @@
+﻿@page "/statistics"
+@inject IStatisticsService StatisticsService
+
+<PageTitle>StatisticsPage</PageTitle>
+
+@if (_signInSuccessful == false)
+{
+    <h3>You are not authorized.</h3>
+}
+else
+{
+    <br />
+    <h3 class="text-center">Statistics</h3>
+
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="card shadow-lg" style="border-radius: 1rem;">
+                    <div class="card-body p-5">
+                        <div class="col">
+                            <h3 class="text-center">Expenses</h3>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Expenses for the whole time</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-danger">@StatisticsService.Statistics?.TotalExpense $</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Expense this year</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-danger">@StatisticsService.Statistics?.CurrentYearExpense $</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Expense this month</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-danger">@StatisticsService.Statistics?.CurrentMonthExpense $</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <h3 class="text-center">Incomes</h3>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Incomes for the whole time</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-success">@StatisticsService.Statistics?.TotalIncome $</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Income this year</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-success">@StatisticsService.Statistics?.CurrentYearIncome $</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Income this month</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-success">@StatisticsService.Statistics?.CurrentMonthIncome $</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+
+                        @*<h3 class="text-center">Топ 5 катогорій по витратам на протязі місяця</h3>
+                        <table class="table table-bordered table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        №
+                                    </th>
+                                    <th>
+                                        Категорія
+                                    </th>
+                                    <th>
+                                        Сума
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var count = 1;
+
+                                    foreach (var expenses in Model.ExpenseByExpenseType)
+                                    {
+                                        <tr>
+                                            <td width="20%">@count</td>
+                                            <td width="50%">@expenses.Item1</td>
+                                            <td class="text-danger" width="30%">@expenses.Item2</td>
+                                        </tr>
+
+                                        count++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                        <br />
+                        <h3 class="text-center">Топ 5 катогорій по прибуткам на протязі місяця</h3>
+                        <table class="table table-bordered table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        №
+                                    </th>
+                                    <th>
+                                        Категорія
+                                    </th>
+                                    <th>
+                                        Сума
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var count2 = 1;
+
+                                    foreach (var incomes in Model.IncomeByIncomeType)
+                                    {
+                                        <tr>
+                                            <td width="20%">@count2</td>
+                                            <td width="50%">@incomes.Item1</td>
+                                            <td class="text-success" width="30%">@incomes.Item2</td>
+                                        </tr>
+
+                                        count2++;
+                                    }
+                                }
+                            </tbody>
+                        </table>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@code {
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected bool _signInSuccessful = false;
+
+    public string ErrorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+
+        try
+        {
+            if (user.Identity.IsAuthenticated == true)
+            {
+                _signInSuccessful = true;
+                await StatisticsService.GetStatistics();
+            }
+            else
+            {
+                _signInSuccessful = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+}

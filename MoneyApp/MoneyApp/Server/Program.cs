@@ -58,6 +58,7 @@ builder.Services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository
 builder.Services.AddScoped<IIncomeCategoryRepository, IncomeCategoryRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
+builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -108,7 +109,6 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 //app.UseRouting();
-
 
 app.MapRazorPages();
 //app.MapControllers();
