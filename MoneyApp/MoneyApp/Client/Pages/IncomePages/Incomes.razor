@@ -5,73 +5,89 @@
 
 <PageTitle>Incomes</PageTitle>
 
-@if (_signInSuccessful == false)
-{
-    <h3>You are not authorized.</h3>
-}
-else
-{
-    <h3>Incomes</h3>
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card shadow-lg" style="border-radius: 1rem;">
+                <div class="card-body p-5">
+                    @if (_signInSuccessful == false)
+                    {
+                        <h3>You are not authorized.</h3>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-between mb-4">
+                            <h3>Incomes</h3>
+                            <button class="btn btn-success" @onclick="CreateNewIncome">Create Income</button>
+                        </div>
 
-    <div class="form-inline">
-        <form class="d-flex">
-            <input type="text" class="form-control mb-2 mr-sm-2 me-1"
-               placeholder="Search"
-               @bind="IncomeService.SearchFilter">
-            <button type="button" class="btn btn-primary mr-sm-2 mb-2 me-1"
-                @onclick="Search">
-                Search
-            </button>
-            <button type="button" class="btn btn-danger mr-sm-2 mb-2"
-                @onclick="Clear">
-                Clear
-            </button>
-        </form>
+                        <div class="form-inline">
+                            <form class="d-flex">
+                                <input type="text" class="form-control mb-2 mr-sm-2 me-1"
+                                   placeholder="Search"
+                                   @bind="IncomeService.SearchFilter">
+                                <button type="button" class="btn btn-primary mr-sm-2 mb-2 me-1"
+                                    @onclick="Search">
+                                    Search
+                                </button>
+                                <button type="button" class="btn btn-danger mr-sm-2 mb-2"
+                                    @onclick="Clear">
+                                    Clear
+                                </button>
+                            </form>
+                        </div>
+                        <br />
+
+                        @if (IncomeService.Incomes == null)
+                        {
+                            <p><em>Loading...</em></p>
+                        }
+                        else if (IncomeService.Incomes.Count == 0)
+                        {
+                            <p>There are no Incomes.</p>
+                        }
+                        else
+                        {
+                            <div class="table-responsive text-nowrap">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Income Category</th>
+                                            <th>Description</th>
+                                            <th>Amount, $</th>
+                                            <th>DateCreated</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var income in IncomeService.Incomes)
+                                        {
+                                            <tr class="align-middle">
+                                                <td width="20%" class="text-truncate" style="max-width: 100px;">@income.IncomeCategory?.CategoryName</td>
+                                                <td width="40%" class="text-truncate" style="max-width: 100px;">@income.Description</td>
+                                                <td width="17%">@income.Amount</td>
+                                                <td width="14%">@income.DateCreated.ToString("dd.MM.yyyy HH:mm")</td>
+                                                <td width="9%">
+                                                    <button class="btn alert-primary" @onclick="(() => ShowIncome(income.Id))"><i class="oi oi-pencil"></i></button>
+                                                    <button class="btn alert-danger" @onclick="(() => DeleteIncome(income.Id))"><i class="oi oi-basket"></i></button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+
+                            <Pagination TotalPagesQuantity="IncomeService.TotalPageQuantity" CurrentPage="IncomeService.CurrentPage" Radius="2"
+                                SelectedPage="SelectedPage">
+                            </Pagination>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-
-    @if (IncomeService.Incomes == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else if (IncomeService.Incomes.Count == 0)
-    {
-        <p>There are no Incomes.</p>
-    }
-    else
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Income Category</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>DateCreated</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var income in IncomeService.Incomes)
-                {
-                    <tr>
-                        <td>@income.IncomeCategory?.CategoryName</td>
-                        <td>@income.Description</td>
-                        <td>@income.Amount</td>
-                        <td>@income.DateCreated.ToString("dd.MM.yyyy HH:mm")</td>
-                        <td>
-                            <button class="btnalert-primary" @onclick="(() => ShowIncome(income.Id))"><i class="oi oi-pencil"></i></button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        <Pagination TotalPagesQuantity="IncomeService.TotalPageQuantity" CurrentPage="IncomeService.CurrentPage" Radius="2"
-            SelectedPage="SelectedPage">
-        </Pagination>
-    }
-
-    <button class="btn btn-primary" @onclick="CreateNewIncome">Create Income</button>
-}
+</div>
 
 @code {
     [CascadingParameter]
@@ -131,5 +147,11 @@ else
     void CreateNewIncome()
     {
         NavigationManager.NavigateTo("/income");
+    }
+
+    async Task DeleteIncome(int id)
+    {
+        await IncomeService.DeleteIncome(id);
+        await IncomeService.GetAllItems(IncomeService.CurrentPage);
     }
 }
