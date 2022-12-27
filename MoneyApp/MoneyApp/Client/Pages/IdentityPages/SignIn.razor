@@ -3,13 +3,14 @@
 
 @if (_signInSuccessful == false)
 {
-    <h3 class="text-center mainHeaderText mb-1">SignIn </h3>
-
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                 <div class="card shadow-lg">
-                    <div class="card-body p-4">
+                    <div class="card-body p-5">
+
+                        <h3 class="text-center">SignIn</h3>
+                        <br />
 
                         <EditForm Model="_userToSignIn" OnValidSubmit="SignInUser">
                             <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -27,7 +28,7 @@
                             </div>
 
                             <div class="d-grid gap-2 mt-3">
-                                <button type="submit" class="btn btn-secondary btnSubmit buttonText"><i class="mdi mdi-login"></i> Sign In</button>
+                                <button type="submit" class="btn btn-primary btnSubmit buttonText"><i class="mdi mdi-login"></i> Sign In</button>
                             </div>
 
                             @if (_attemptToSignInFailed == true)
