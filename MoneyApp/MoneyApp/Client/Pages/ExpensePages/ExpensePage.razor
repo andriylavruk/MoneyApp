@@ -3,59 +3,71 @@
 @inject IExpenseService ExpenseService
 @inject IExpenseCategoryService ExpenseCategoryService
 
-@if(_signInSuccessful == false)
-{
-    <h3>You are not authorized.</h3>
-}
-else
-{
-    @if (Id == null)
-    {
-        <PageTitle>Create a new Expense</PageTitle>
-        <h3>Create a new Expense</h3>
-    }
-    else
-    {
-        <PageTitle>Edit Expense</PageTitle>
-        <h3>Edit Expense</h3>
-    }
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card shadow-lg" style="border-radius: 1rem;">
+                <div class="card-body p-5">
+                    @if (_signInSuccessful == false)
+                    {
+                        <h3>You are not authorized.</h3>
+                    }
+                    else
+                    {
+                        @if (Id == null)
+                        {
+                            <PageTitle>Create a new Expense</PageTitle>
+                            <h3>Create a new Expense</h3>
+                        }
+                        else
+                        {
+                            <PageTitle>Edit Expense</PageTitle>
+                            <h3>Edit Expense</h3>
+                        }
 
-    <EditForm Model="expense" OnValidSubmit="HandleSubmit">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-        <div>
-            <label for="expense">Description</label>
-            <InputText id="expense" @bind-Value="expense.Description" class="form-control"></InputText>
-            <ValidationMessage For="@(() => expense.Description)"></ValidationMessage>
-        </div>
-        <div>
-            <label for="expense">Amount</label>
-            <InputNumber id="expense" @bind-Value="expense.Amount" class="form-control"></InputNumber>
-            <ValidationMessage For="@(() => expense.Amount)"></ValidationMessage>
-        </div>
-        <div>
-            <label>Expense Category</label><br />
-            <InputSelect @bind-Value="expense.ExpenseCategoryId" class="form-select">
-                @if (Id == null)
-                {
-                    <option selected value="">Select category</option>
-                }
+                        <br />
 
-                @foreach (var expenseCategory in ExpenseCategoryService.ExpenseCategories)
-                {
-                    <option value="@expenseCategory.Id">@expenseCategory.CategoryName</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => expense.ExpenseCategoryId)"></ValidationMessage>
-        </div>
-        <br />
-        <button type="submit" class="btn btn-primary">@btnText</button>
-        @if (Id != null)
-        {
-            <button type="button" class="btn btn-danger" @onclick="DeleteExpense">Delete Expense</button>
-        }
-    </EditForm>
+                        <EditForm Model="expense" OnValidSubmit="HandleSubmit">
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                            <div>
+                                <label for="expense">Description</label>
+                                <InputText id="expense" @bind-Value="expense.Description" class="form-control"></InputText>
+                                <ValidationMessage For="@(() => expense.Description)"></ValidationMessage>
+                            </div>
+                            <div>
+                                <label for="expense">Amount</label>
+                                <InputNumber id="expense" @bind-Value="expense.Amount" class="form-control"></InputNumber>
+                                <ValidationMessage For="@(() => expense.Amount)"></ValidationMessage>
+                            </div>
+                            <div>
+                                <label>Expense Category</label><br />
+                                <InputSelect @bind-Value="expense.ExpenseCategoryId" class="form-select">
+                                    @if (Id == null)
+                                    {
+                                        <option selected value="">Select category</option>
+                                    }
 
-}
+                                    @foreach (var expenseCategory in ExpenseCategoryService.ExpenseCategories)
+                                    {
+                                        <option value="@expenseCategory.Id">@expenseCategory.CategoryName</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => expense.ExpenseCategoryId)"></ValidationMessage>
+                            </div>
+                            <br />
+
+                            <button type="submit" class="btn btn-success m-1">@btnText</button>
+                            @if (Id != null)
+                            {
+                                <button type="button" class="btn btn-danger m-1" @onclick="DeleteExpense">Delete</button>
+                            }
+                        </EditForm>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -76,7 +88,7 @@ else
     {
         var user = (await AuthenticationState).User;
 
-        btnText = Id == null ? "Save New Expense" : "Update Expense";
+        btnText = Id == null ? "Create New Expense" : "Update Expense";
 
         try
         {

@@ -3,58 +3,71 @@
 @inject IIncomeService IncomeService
 @inject IIncomeCategoryService IncomeCategoryService
 
-@if(_signInSuccessful == false)
-{
-    <h3>You are not authorized.</h3>
-}
-else
-{
-    @if (Id == null)
-    {
-        <PageTitle>Create a new Income</PageTitle>
-        <h3>Create a new Income</h3>
-    }
-    else
-    {
-        <PageTitle>Edit Income</PageTitle>
-        <h3>Edit Income</h3>
-    }
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card shadow-lg" style="border-radius: 1rem;">
+                <div class="card-body p-5">
+                    @if (_signInSuccessful == false)
+                    {
+                        <h3>You are not authorized.</h3>
+                    }
+                    else
+                    {
+                        @if (Id == null)
+                        {
+                            <PageTitle>Create a new Income</PageTitle>
+                            <h3>Create a new Income</h3>
+                        }
+                        else
+                        {
+                            <PageTitle>Edit Income</PageTitle>
+                            <h3>Edit Income</h3>
+                        }
 
-    <EditForm Model="income" OnValidSubmit="HandleSubmit">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-        <div>
-            <label for="income">Description</label>
-            <InputText id="income" @bind-Value="income.Description" class="form-control"></InputText>
-            <ValidationMessage For="@(() => income.Description)"></ValidationMessage>
-        </div>
-        <div>
-            <label for="income">Amount</label>
-            <InputNumber id="income" @bind-Value="income.Amount" class="form-control"></InputNumber>
-            <ValidationMessage For="@(() => income.Amount)"></ValidationMessage>
-        </div>
-        <div>
-            <label>Income Category</label><br />
-            <InputSelect @bind-Value="income.IncomeCategoryId" class="form-select">
-                @if (Id == null)
-                {
-                    <option selected value="">Select category</option>
-                }
+                        <br />
 
-                @foreach (var incomeCategory in IncomeCategoryService.IncomeCategories)
-                {
-                    <option value="@incomeCategory.Id">@incomeCategory.CategoryName</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => income.IncomeCategoryId)"></ValidationMessage>
+                        <EditForm Model="income" OnValidSubmit="HandleSubmit">
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                            <div>
+                                <label for="income">Description</label>
+                                <InputText id="income" @bind-Value="income.Description" class="form-control"></InputText>
+                                <ValidationMessage For="@(() => income.Description)"></ValidationMessage>
+                            </div>
+                            <div>
+                                <label for="income">Amount</label>
+                                <InputNumber id="income" @bind-Value="income.Amount" class="form-control"></InputNumber>
+                                <ValidationMessage For="@(() => income.Amount)"></ValidationMessage>
+                            </div>
+                            <div>
+                                <label>Income Category</label><br />
+                                <InputSelect @bind-Value="income.IncomeCategoryId" class="form-select">
+                                    @if (Id == null)
+                                    {
+                                        <option selected value="">Select category</option>
+                                    }
+
+                                    @foreach (var incomeCategory in IncomeCategoryService.IncomeCategories)
+                                    {
+                                        <option value="@incomeCategory.Id">@incomeCategory.CategoryName</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => income.IncomeCategoryId)"></ValidationMessage>
+                            </div>
+                            <br />
+
+                            <button type="submit" class="btn btn-success m-1">@btnText</button>
+                            @if (Id != null)
+                            {
+                                <button type="button" class="btn btn-danger m-1" @onclick="DeleteIncome">Delete</button>
+                            }
+                        </EditForm>
+                    }
+                </div>
+            </div>
         </div>
-        <br />
-        <button type="submit" class="btn btn-primary">@btnText</button>
-        @if (Id != null)
-        {
-            <button type="button" class="btn btn-danger" @onclick="DeleteIncome">Delete Income</button>
-        }
-    </EditForm>
-}
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -75,7 +88,7 @@ else
     {
         var user = (await AuthenticationState).User;
 
-        btnText = Id == null ? "Save New Income" : "Update Income";
+        btnText = Id == null ? "Create New Income" : "Update Income";
 
         try
         {

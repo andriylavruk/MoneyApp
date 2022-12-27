@@ -2,38 +2,51 @@
 @page "/expensecategory/{id:int}"
 @inject IExpenseCategoryService ExpenseCategoryService
 
-@if (_signInSuccessful == false)
-{
-    <h3>You are not authorized.</h3>
-}
-else
-{
-    @if (Id == null)
-    {
-        <PageTitle>Create a new Expense Category</PageTitle>
-        <h3>Create a new Expense Category</h3>
-    }
-    else
-    {
-        <PageTitle>Edit Expense Category</PageTitle>
-        <h3>Edit Expense Category</h3>
-    }
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card shadow-lg" style="border-radius: 1rem;">
+                <div class="card-body p-5">
+                    @if (_signInSuccessful == false)
+                    {
+                        <h3>You are not authorized.</h3>
+                    }
+                    else
+                    {
+                        @if (Id == null)
+                        {
+                            <PageTitle>Create a new Expense Category</PageTitle>
+                            <h3>Create a new Expense Category</h3>
+                        }
+                        else
+                        {
+                            <PageTitle>Edit Expense Category</PageTitle>
+                            <h3>Edit Expense Category</h3>
+                        }
 
-    <EditForm Model="expenseCategory" OnValidSubmit="HandleSubmit">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-        <div>
-            <label for="categoryName">Category Name</label>
-            <InputText id="categoryName" @bind-Value="expenseCategory.CategoryName" class="form-control"></InputText>
-            <ValidationMessage For="@(() => expenseCategory.CategoryName)"></ValidationMessage>
+                        <br />
+
+                        <EditForm Model="expenseCategory" OnValidSubmit="HandleSubmit">
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                            <div>
+                                <label for="categoryName">Category Name</label>
+                                <InputText id="categoryName" @bind-Value="expenseCategory.CategoryName" class="form-control"></InputText>
+                                <ValidationMessage For="@(() => expenseCategory.CategoryName)"></ValidationMessage>
+                            </div>
+                            <br />
+
+                            <button type="submit" class="btn btn-success m-1">@btnText</button>
+                            @if (Id != null)
+                            {
+                                <button type="button" class="btn btn-danger m-1" @onclick="DeleteExpenseCategory">Delete Expense Category</button>
+                            }
+                        </EditForm>
+                    }
+                </div>
+            </div>
         </div>
-        <br />
-        <button type="submit" class="btn btn-primary">@btnText</button>
-        @if (Id != null)
-        {
-            <button type="button" class="btn btn-danger" @onclick="DeleteExpenseCategory">Delete Expense Category</button>
-        }
-    </EditForm>
-}
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -54,7 +67,7 @@ else
     {
         var user = (await AuthenticationState).User;
 
-        btnText = Id == null ? "Save New Expense Category" : "Update Expense Category";
+        btnText = Id == null ? "Create New Expense Category" : "Update Expense Category";
 
         try
         {
@@ -75,7 +88,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        if(Id == null)
+        if (Id == null)
         {
             //Create Expense Category
         }

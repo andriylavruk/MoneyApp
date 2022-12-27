@@ -50,6 +50,11 @@ else
 
 @code
 {
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthenticationState { get; set; }
+
+    public string ErrorMessage { get; set; }
+
     [Inject]
     public HttpClient HttpClient { get; set; }
 
@@ -87,6 +92,27 @@ else
         else
         {
             _attemptToSignInFailed = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+
+        try
+        {
+            if (user.Identity.IsAuthenticated == true)
+            {
+                _signInSuccessful = true;
+            }
+            else
+            {
+                _signInSuccessful = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
         }
     }
 }

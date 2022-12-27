@@ -1,58 +1,72 @@
 ﻿@page "/register"
 
-@if (_registerSuccessful == false)
+@if (_signInSuccessful == false)
 {
-    <h3 class="text-center mainHeaderText mb-1">Register </h3>
+    @if (_registerSuccessful == false)
+    {
+        <h3 class="text-center mainHeaderText mb-1">Register </h3>
 
-    <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class="card shadow-lg">
-                    <div class="card-body p-4">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-lg">
+                        <div class="card-body p-4">
 
-                        <EditForm Model="_userToRegister" OnValidSubmit="RegisterUser">
-                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                            <EditForm Model="_userToRegister" OnValidSubmit="RegisterUser">
+                                <DataAnnotationsValidator></DataAnnotationsValidator>
 
-                            <div class="form-group">
-                                <label class="label-name" for="email">Email:</label>
-                                <InputText @bind-Value="_userToRegister.EmailAddress" id="email" class="form-control" />
-                                <ValidationMessage For="@(() => _userToRegister.EmailAddress)" />
-                            </div>
+                                <div class="form-group">
+                                    <label class="label-name" for="email">Email:</label>
+                                    <InputText @bind-Value="_userToRegister.EmailAddress" id="email" class="form-control" />
+                                    <ValidationMessage For="@(() => _userToRegister.EmailAddress)" />
+                                </div>
 
-                            <div class="form-group">
-                                <label class="label-name" for="password">Password:</label>
-                                <InputText @bind-Value="_userToRegister.Password" type="password" id="password" class="form-control" />
-                                <ValidationMessage For="@(() => _userToRegister.Password)" />
-                            </div>
+                                <div class="form-group">
+                                    <label class="label-name" for="password">Password:</label>
+                                    <InputText @bind-Value="_userToRegister.Password" type="password" id="password" class="form-control" />
+                                    <ValidationMessage For="@(() => _userToRegister.Password)" />
+                                </div>
 
-                            <div class="d-grid gap-2 mt-3">
-                                <button type="submit" class="btn btn-secondary btnSubmit buttonText"><i class="mdi mdi-login"></i> Register</button>
-                            </div>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button type="submit" class="btn btn-secondary btnSubmit buttonText"><i class="mdi mdi-login"></i> Register</button>
+                                </div>
 
-                            @if (_attemptToRegisterFailed == true)
-                            {
-                                <p class="text-danger">@_attemptToRegisterFailedErrorMessage</p>
-                            }
+                                @if (_attemptToRegisterFailed == true)
+                                {
+                                    <p class="text-danger">@_attemptToRegisterFailedErrorMessage</p>
+                                }
 
-                        </EditForm>
+                            </EditForm>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        NavigationManager.NavigateTo("/signin", true);
+    }
 }
 else
 {
-    NavigationManager.NavigateTo("/signin", true);
+    NavigationManager.NavigateTo("/");
 }
 
 @code
 {
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected bool _signInSuccessful = false;
+
+    public string ErrorMessage { get; set; }
+
     [Inject]
     public HttpClient HttpClient { get; set; }
 
-    private User _userToRegister = new();//{ EmailAddress = "user@example.com", Password = "P@ssw0rd" }
+    private User _userToRegister = new();
     protected bool _registerSuccessful = false;
     protected bool _attemptToRegisterFailed = false;
     protected string? _attemptToRegisterFailedErrorMessage = null;
@@ -77,6 +91,27 @@ else
             _attemptToRegisterFailedErrorMessage = $"{serverErrorMessages} Try input again.";
 
             _attemptToRegisterFailed = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+
+        try
+        {
+            if (user.Identity.IsAuthenticated == true)
+            {
+                _signInSuccessful = true;
+            }
+            else
+            {
+                _signInSuccessful = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
         }
     }
 }
